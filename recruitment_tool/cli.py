@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import sys
 from typing import Sequence
+
+from .csv_io import CsvInputError, read_csv
+from .overview import build_overview, format_overview
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -23,8 +27,14 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    print(f"输入文件：{args.input_csv}")
-    print(f"输出目录：{args.output_dir}")
-    print("项目骨架已就绪，业务功能将在后续需求 PR 中实现。")
+    try:
+        data = read_csv(args.input_csv)
+        overview = build_overview(data)
+    except (CsvInputError, OSError, UnicodeError) as exc:
+        print(f"错误：{exc}", file=sys.stderr)
+        return 1
+
+    print(format_overview(data, overview))
+    print("校验与导出将在后续需求 PR 中实现。")
     return 0
 
