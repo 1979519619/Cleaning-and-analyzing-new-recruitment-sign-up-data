@@ -5,6 +5,9 @@ from __future__ import annotations
 import csv
 from dataclasses import dataclass
 from pathlib import Path
+import os
+import tempfile
+from typing import Iterable, Sequence
 
 
 EXPECTED_HEADERS = ("姓名", "学号", "邮箱", "志愿1", "志愿2", "推荐人")
@@ -62,3 +65,27 @@ def read_csv(path: Path) -> CsvData:
             if values
         )
     return CsvData(headers=headers, rows=rows)
+
+
+def write_csv_atomic(
+    path: Path,
+    headers: Sequence[str],
+    rows: Iterable[Sequence[str]],
+) -> None:
+    """Write a UTF-8 BOM CSV and replace the destination only when complete."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    os.close(descriptor)
+    temporary_path = Path(temporary_name)
+    try:
+        with temporary_path.open("w", encoding="utf-8-sig", newline="") as stream:
+            writer = csv.writer(stream)
+            writer.writerow(headers)
+            writer.writerows(rows)
+        temporary_path.replace(path)
+    except Exception:
+        temporary_path.unlink(missing_ok=True)
+        raise
