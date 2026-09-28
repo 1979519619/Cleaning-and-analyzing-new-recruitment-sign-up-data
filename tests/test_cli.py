@@ -13,12 +13,11 @@ class CliTests(unittest.TestCase):
         self.assertEqual(args.input_csv.name, "input.csv")
         self.assertEqual(args.output_dir.name, "result")
 
-    def test_scaffold_main_returns_success(self) -> None:
+    def test_missing_input_returns_fatal_error(self) -> None:
         output = io.StringIO()
-        with contextlib.redirect_stdout(output):
+        with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
             exit_code = main(["input.csv", "--output-dir", "result"])
-        self.assertEqual(exit_code, 0)
-        self.assertIn("项目骨架已就绪", output.getvalue())
+        self.assertEqual(exit_code, 1)
 
 
 if __name__ == "__main__":
