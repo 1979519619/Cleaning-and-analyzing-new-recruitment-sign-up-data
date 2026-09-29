@@ -6,7 +6,11 @@
 
 三项需求均已实现并由自动化测试覆盖。每项需求通过独立 PR 开发，最终状态以 `main` 分支和 GitHub Actions 为准。
 
+Gate 1 与 Gate 2 的退出检查已完成，结论和剩余口径见 [GATE_STATUS.md](GATE_STATUS.md)。Gate 3 尚未在本轮执行正式验收。
+
 ## 运行方式
+
+先进入本仓库根目录，再执行：
 
 ```powershell
 python main.py input.csv --output-dir output
