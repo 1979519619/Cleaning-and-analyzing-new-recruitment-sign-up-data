@@ -21,6 +21,16 @@ python -m unittest discover -s tests -v
 
 程序成功处理后会在指定目录生成 `问题清单.csv`、`第一志愿汇总.csv` 和 `干净数据.csv`。
 
+## 本地演示
+
+仓库内置一份 40 条合成演示数据，可直接体验完整流程：
+
+```powershell
+python main.py ".\local_demo\模拟招新报名数据_40人.csv" --output-dir ".\local_demo\output"
+```
+
+数据的构造说明与基线结果见 [local_demo/README.md](local_demo/README.md)。
+
 ## 数据约定
 
 输入 CSV 字段为：`姓名`、`学号`、`邮箱`、`志愿1`、`志愿2`、`推荐人`。文件按 `utf-8-sig` 读取，学号始终按字符串处理并保留前导零。
